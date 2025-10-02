@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Clock Angle — Degrees</title>
+
+  <style>
+    :root{
+      --bg:#0f1724;
+      --card:#0b1220;
+      --muted:#98a0b3;
+      --accent:#5eead4;
+      --accent-2:#60a5fa;
+      --glass: rgba(255,255,255,0.03);
+      --radius:14px;
+      --shadow: 0 8px 30px rgba(2,6,23,0.6);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+
+    html,body{
+      height:100%;
+      margin:0;
+      background:
+        radial-gradient(1200px 600px at 10% 10%, rgba(14,165,233,0.06), transparent 8%),
+        radial-gradient(1000px 400px at 90% 90%, rgba(99,102,241,0.04), transparent 8%),
+        var(--bg);
+      color:#e6eef8;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:32px;
+      box-sizing:border-box;
+    }
+
+    .card{
+      width:100%;
+      max-width:720px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:var(--radius);
+      padding:28px;
+      box-shadow:var(--shadow);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.03);
+      display:grid;
+      grid-template-columns: 1fr 320px;
+      gap:20px;
+    }
+
+    .left{
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+      justify-content:center;
+    }
+
+    h1{
+      margin:0;
+      font-size:20px;
+      letter-spacing:0.2px;
+      color:#f8fbff;
+    }
+
+    p.lead{
+      margin:0;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .form{
+      margin-top:6px;
+      display:flex;
+      gap:12px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+
+    label{
+      font-size:12px;
+      color:var(--muted);
+    }
+
+    .input-group{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      min-width:120px;
+    }
+
+    input[type="number"]{
+      appearance:none;
+      -moz-appearance:textfield;
+      border:none;
+      outline:none;
+      background:var(--glass);
+      padding:10px 12px;
+      border-radius:10px;
+      color: #e6eef8;
+      font-size:15px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.02);
+    }
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    .controls{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      margin-top:6px;
+    }
+
+    button.primary{
+      background: linear-gradient(90deg,var(--accent), var(--accent-2));
+      border:none;
+      color:#052024;
+      font-weight:600;
+      padding:10px 14px;
+      border-radius:10px;
+      cursor:pointer;
+      box-shadow: 0 6px 18px rgba(96,165,250,0.12), inset 0 -2px 0 rgba(0,0,0,0.12);
+      transition: transform .12s ease, box-shadow .12s ease, opacity .12s;
+    }
+    button.primary:active{ transform: translateY(1px) scale(.997); }
+    button.ghost{
+      background:transparent;
+      border:1px solid rgba(255,255,255,0.04);
+      color:var(--muted);
+      padding:8px 12px;
+      border-radius:10px;
+      cursor:pointer;
+    }
+
+    /* Right panel: result */
+    .right{
+      background: linear-gradient(180deg, rgba(255,255,255,0.016), rgba(255,255,255,0.01));
+      border-radius:12px;
+      padding:18px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:12px;
+      border:1px solid rgba(255,255,255,0.02);
+    }
+
+    .angle-display{
+      font-size:44px;
+      font-weight:700;
+      letter-spacing:0.6px;
+      color:#eafdf8;
+      display:flex;
+      align-items:baseline;
+      gap:8px;
+    }
+    .angle-unit{
+      font-size:18px;
+      color:var(--muted);
+      font-weight:600;
+    }
+
+    .meta{
+      font-size:13px;
+      color:var(--muted);
+    }
+
+    .small-note{
+      font-size:12px;
+      color:var(--muted);
+      text-align:center;
+      max-width:260px;
+    }
+
+    /* responsive */
+    @media (max-width:780px){
+      .card{ grid-template-columns: 1fr; padding:20px; }
+      .right{ order:-1; }
+      .angle-display{ font-size:36px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="card" role="main" aria-labelledby="title">
+    <section class="left" aria-label="inputs">
+      <div>
+        <h1 id="title">Clock Angle — Degrees</h1>
+        <p class="lead">Enter hour and minute. Result shows the <strong>smaller angle</strong> between hour and minute hands in degrees.</p>
+      </div>
+
+      <div class="form" aria-hidden="false">
+        <div class="input-group">
+          <label for="hour">Hour (0–12)</label>
+          <input id="hour" type="number" min="0" max="23" value="3" aria-describedby="hour-help">
+          <div id="hour-help" class="meta">If you enter 13–23, it'll convert to 1–11 automatically.</div>
+        </div>
+
+        <div class="input-group">
+          <label for="minute">Minute (0–59)</label>
+          <input id="minute" type="number" min="0" max="59" value="15">
+        </div>
+
+        <div style="flex:1"></div>
+
+        <div class="controls">
+          <button class="primary" id="calc">Compute</button>
+          <button class="ghost" id="now">Use Current Time</button>
+        </div>
+      </div>
+
+      <p class="small-note">Formula used: <code>angle = |30×H − 11/2×M|</code>, then smaller of (angle, 360-angle).</p>
+    </section>
+
+    <aside class="right" aria-label="result">
+      <div class="angle-display" id="result">-- <span class="angle-unit">°</span></div>
+      <div class="meta" id="details">Hour: -- &nbsp;•&nbsp; Minute: --</div>
+    </aside>
+  </main>
+
+  <script>
+    // Compute angle using formula: |30H - 11/2 M| then take smaller of angle and 360-angle
+    function computeAngle(hour, minute) {
+      // normalize hour to 0-11
+      const H = ((hour % 12) + 12) % 12;
+      const M = minute % 60;
+      const raw = Math.abs(30 * H - (11/2) * M);
+      const angle = Math.min(raw, 360 - raw);
+      // Round to 2 decimal places but show .00 only when necessary
+      return Math.round(angle * 100) / 100;
+    }
+
+    const hourInput = document.getElementById('hour');
+    const minuteInput = document.getElementById('minute');
+    const calcBtn = document.getElementById('calc');
+    const nowBtn = document.getElementById('now');
+    const resultEl = document.getElementById('result');
+    const detailsEl = document.getElementById('details');
+
+    function show(angle, h, m) {
+      // Format: show trailing zeros up to 2 decimals only if needed
+      let text = (Number.isInteger(angle) ? angle.toString() : angle.toFixed(angle % 1 === 0 ? 0 : (Math.round(angle * 100) % 100 === 0 ? 0 : 2)));
+      // Ensure consistent decimal format (e.g., 7.5 -> 7.5, 7 -> 7)
+      resultEl.innerHTML = text + ' <span class="angle-unit">°</span>';
+      detailsEl.textContent = `Hour: ${h}  •  Minute: ${m}`;
+    }
+
+    function handleCompute() {
+      let h = parseInt(hourInput.value, 10);
+      let m = parseInt(minuteInput.value, 10);
+
+      if (Number.isNaN(h) || Number.isNaN(m)) {
+        alert('Please enter valid numbers for hour and minute.');
+        return;
+      }
+      if (m < 0 || m > 59) {
+        alert('Minutes must be between 0 and 59.');
+        return;
+      }
+      // allow 0..23 for hour; it will convert to 0..11
+      if (h < 0) { alert('Hour must be 0 or positive.'); return; }
+
+      const angle = computeAngle(h, m);
+      show(angle, h % 24, m);
+    }
+
+    calcBtn.addEventListener('click', handleCompute);
+
+    nowBtn.addEventListener('click', () => {
+      const now = new Date();
+      const h = now.getHours();
+      const m = now.getMinutes();
+      hourInput.value = h;
+      minuteInput.value = m;
+      handleCompute();
+    });
+
+    // compute initial example
+    handleCompute();
+  </script>
+</body>
+</html>
